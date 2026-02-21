@@ -1,0 +1,98 @@
+/* =====================================================
+   Ocean View Resort – Global Styles
+   ===================================================== */
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f0f4f8;
+  color: #1a202c;
+  min-height: 100vh;
+}
+
+/* ── Navbar ─────────────────────────────── */
+.navbar-brand {
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+}
+
+/* ── Cards ──────────────────────────────── */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Buttons ────────────────────────────── */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* ── Form Controls ──────────────────────── */
+.form-control,
+.form-select {
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+/* ── Tables ─────────────────────────────── */
+.table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ── Print Invoice ──────────────────────── */
+@media print {
+  .navbar,
+  .btn,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    font-size: 14px;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* ── Responsive ─────────────────────────── */
+@media (max-width: 576px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+}
