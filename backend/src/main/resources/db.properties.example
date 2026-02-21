@@ -1,0 +1,7 @@
+# Database Configuration – Example
+# Copy this file to db.properties and fill in your local values
+# DO NOT commit db.properties (it is in .gitignore)
+
+db.url=jdbc:mysql://localhost:3306/ocean_view_resort?useSSL=false&serverTimezone=UTC
+db.username=root
+db.password=YOUR_MYSQL_PASSWORD
