@@ -102,6 +102,31 @@ public class ReservationDAO {
     }
 
     /**
+     * Updates an existing reservation in the database.
+     *
+     * @return true if updated, false otherwise.
+     */
+    public boolean updateReservation(Reservation r) {
+        String sql = "UPDATE reservations SET guest_name=?, address=?, contact_number=?, " +
+                "room_type=?, check_in=?, check_out=?, total_amount=? " +
+                "WHERE reservation_id=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            stmt.setString(1, r.getGuestName());
+            stmt.setString(2, r.getAddress());
+            stmt.setString(3, r.getContactNumber());
+            stmt.setString(4, r.getRoomType());
+            stmt.setDate(5, Date.valueOf(r.getCheckIn()));
+            stmt.setDate(6, Date.valueOf(r.getCheckOut()));
+            stmt.setDouble(7, r.getTotalAmount());
+            stmt.setInt(8, r.getReservationId());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("[ReservationDAO] updateReservation error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
      * Checks if a room is already booked for the given date range.
      * Prevents overlapping reservations.
      */
