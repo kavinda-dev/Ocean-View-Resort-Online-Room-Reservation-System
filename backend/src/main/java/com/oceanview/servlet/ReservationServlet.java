@@ -140,6 +140,105 @@ public class ReservationServlet extends HttpServlet {
     }
 
     @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        setHeaders(resp);
+        PrintWriter out = resp.getWriter();
+
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+            resp.setStatus(400);
+            out.print(error("Reservation ID required."));
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(pathInfo.substring(1));
+
+            // Ensure reservation exists
+            Reservation existing = dao.getReservationById(id);
+            if (existing == null) {
+                resp.setStatus(404);
+                out.print(error("Reservation not found."));
+                return;
+            }
+
+            JsonObject body = gson.fromJson(req.getReader(), JsonObject.class);
+            String guestName = body.get("guestName").getAsString().trim();
+            String address = body.get("address").getAsString().trim();
+            String contactNumber = body.get("contactNumber").getAsString().trim();
+            String roomType = body.get("roomType").getAsString().trim();
+            String checkInStr = body.get("checkIn").getAsString().trim();
+            String checkOutStr = body.get("checkOut").getAsString().trim();
+
+            // Validate required fields
+            if (guestName.isEmpty() || contactNumber.isEmpty() || roomType.isEmpty()
+                    || checkInStr.isEmpty() || checkOutStr.isEmpty()) {
+                resp.setStatus(400);
+                out.print(error("All fields are required."));
+                return;
+            }
+
+            // Validate phone number format
+            if (!contactNumber.matches("^[0-9]{10}$")) {
+                resp.setStatus(400);
+                out.print(error("Contact number must be 10 digits."));
+                return;
+            }
+
+            LocalDate checkIn = LocalDate.parse(checkInStr);
+            LocalDate checkOut = LocalDate.parse(checkOutStr);
+
+            // Validate date logic
+            if (!checkOut.isAfter(checkIn)) {
+                resp.setStatus(400);
+                out.print(error("Check-out date must be after check-in date."));
+                return;
+            }
+
+            // Check overlap (excluding this reservation's current room/dates)
+            boolean sameRoomType = roomType.equalsIgnoreCase(existing.getRoomType());
+            boolean sameCheckIn = checkIn.equals(existing.getCheckIn());
+            boolean sameCheckOut = checkOut.equals(existing.getCheckOut());
+            boolean datesUnchanged = sameCheckIn && sameCheckOut && sameRoomType;
+
+            if (!datesUnchanged && dao.checkOverlap(roomType, checkIn, checkOut)) {
+                resp.setStatus(409);
+                out.print(error("Room not available for the selected dates."));
+                return;
+            }
+
+            // Recalculate total
+            long nights = java.time.temporal.ChronoUnit.DAYS.between(checkIn, checkOut);
+            double totalAmount = ReservationDAO.calculateAmount(roomType, nights);
+
+            // Build updated reservation
+            Reservation updated = new Reservation(guestName, address, contactNumber,
+                    roomType, checkIn, checkOut, totalAmount);
+            updated.setReservationId(id);
+
+            if (dao.updateReservation(updated)) {
+                JsonObject data = new JsonObject();
+                data.addProperty("reservationId", id);
+                data.addProperty("totalAmount", totalAmount);
+                data.addProperty("nights", nights);
+                out.print(success("Reservation updated successfully.", data));
+            } else {
+                resp.setStatus(500);
+                out.print(error("Failed to update reservation."));
+            }
+        } catch (DateTimeParseException e) {
+            resp.setStatus(400);
+            out.print(error("Invalid date format. Use YYYY-MM-DD."));
+        } catch (NumberFormatException e) {
+            resp.setStatus(400);
+            out.print(error("Invalid reservation ID."));
+        } catch (Exception e) {
+            resp.setStatus(500);
+            out.print(error("Server error: " + e.getMessage()));
+        }
+    }
+
+    @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         setHeaders(resp);
         PrintWriter out = resp.getWriter();
@@ -168,7 +267,7 @@ public class ReservationServlet extends HttpServlet {
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
         resp.setHeader("Access-Control-Allow-Origin", "*");
-        resp.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS");
+        resp.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
         resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
         resp.setStatus(200);
     }
