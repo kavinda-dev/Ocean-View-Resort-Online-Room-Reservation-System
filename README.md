@@ -1,34 +1,42 @@
 # 🏨 Ocean View Resort – Online Room Reservation System
 
-> A distributed web-based reservation management system for Ocean View Resort, Galle, Sri Lanka.
+> A modern, distributed web-based reservation management system for **Ocean View Resort**, Galle, Sri Lanka.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](pom.xml)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](backend/pom.xml)
 [![Java](https://img.shields.io/badge/Java-11+-orange.svg)](https://www.oracle.com/java/)
-[![React](https://img.shields.io/badge/React-18-61DAFB.svg)](https://reactjs.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1.svg)](https://www.mysql.com/)
+[![React](https://img.shields.io/badge/React-18-61DAFB.svg?logo=react)](https://reactjs.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1.svg?logo=mysql)](https://www.mysql.com/)
+[![Maven](https://img.shields.io/badge/Maven-3.8+-C71A36.svg?logo=apachemaven)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ---
 
 ## 📋 Table of Contents
 
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [Architecture](#architecture)
-- [Prerequisites](#prerequisites)
-- [Setup Instructions](#setup-instructions)
-- [Database Setup](#database-setup)
-- [Running the Application](#running-the-application)
-- [API Endpoints](#api-endpoints)
-- [Branching Strategy](#branching-strategy)
-- [Contributing](#contributing)
+- [Project Overview](#-project-overview)
+- [Features](#-features)
+- [Technology Stack](#️-technology-stack)
+- [Architecture](#️-architecture)
+- [Room Rates](#-room-rates)
+- [Prerequisites](#-prerequisites)
+- [Setup Instructions](#️-setup-instructions)
+- [API Endpoints](#-api-endpoints)
+- [Project Structure](#-project-structure)
+- [Branching Strategy](#-branching-strategy)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
 ## 📖 Project Overview
 
-Ocean View Resort's Online Room Reservation System replaces manual paper-based booking with a modern, distributed web application. It enables resort staff to manage reservations, calculate bills, and generate reports efficiently.
+The **Ocean View Resort Online Room Reservation System** replaces manual, paper-based booking processes with a fully functional distributed web application. Designed for resort staff, the system enables seamless management of guest reservations, automatic bill calculations, printable invoices, and insightful reporting — all from a clean, responsive web interface.
+
+**Key Highlights:**
+- 🔐 Secure JWT-based authentication
+- 📱 Fully responsive React.js frontend
+- ☕ Robust Java Servlet backend following MVC & DAO patterns
+- 📊 Real-time reports: daily, monthly, occupancy, and guest history
 
 ---
 
@@ -36,64 +44,77 @@ Ocean View Resort's Online Room Reservation System replaces manual paper-based b
 
 | Feature | Description |
 |---|---|
-| 🔐 Secure Login | JWT-based authentication with hashed passwords |
-| 📅 Reservations | Add, view, update, and cancel room bookings |
-| 🧾 Bill Calculation | Automatic nightly rate calculation with printable invoice |
-| 📊 Reports | Daily, monthly, occupancy, and guest history reports |
-| 🛡️ Security | SQL injection prevention, input validation, session management |
-| 📱 Responsive UI | Mobile-friendly React frontend with Bootstrap |
+| 🔐 **Secure Login** | JWT-based authentication with SHA-256 hashed passwords |
+| 📅 **Reservations** | Add, view, update, and cancel room bookings with overlap detection |
+| 🧾 **Bill Calculation** | Automatic nightly rate calculation with printable invoice |
+| 📊 **Reports** | Daily bookings, monthly income, occupancy stats, and guest history |
+| 🛡️ **Security** | SQL injection prevention, input validation, and session management |
+| 📱 **Responsive UI** | Mobile-friendly React frontend styled with Bootstrap 5 |
+| 🗄️ **Singleton DB** | Thread-safe DatabaseConnection Singleton pattern |
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React.js 18, Bootstrap 5, Axios |
-| Backend | Java 11, Java Servlets, Apache Tomcat 10 |
-| JSON Processing | Gson 2.10 |
-| Database | MySQL 8.0, JDBC |
-| Build Tool | Maven 3.8+ |
+| Layer | Technology | Version |
+|---|---|---|
+| **Frontend** | React.js, Bootstrap 5, Axios | React 18 |
+| **Backend** | Java Servlets, Apache Tomcat | Java 11+, Tomcat 10 |
+| **JSON Processing** | Google Gson | 2.10 |
+| **Database** | MySQL, JDBC | MySQL 8.0 |
+| **Build Tool** | Apache Maven | 3.8+ |
 
 ---
 
 ## 🏗️ Architecture
 
-This project follows a **3-Tier Architecture** with MVC, DAO, and Singleton design patterns:
+This project follows a **3-Tier Architecture** implementing the **MVC**, **DAO**, and **Singleton** design patterns:
 
 ```
-┌─────────────────────────────────────────┐
-│      Presentation Layer (React.js)       │
-│   Login | Dashboard | Reservations       │
-│   Invoice | Reports | Help               │
-└────────────────┬────────────────────────┘
-                 │ HTTP / REST API (JSON)
-┌────────────────▼────────────────────────┐
-│     Application Layer (Java Servlets)    │
-│   LoginServlet | ReservationServlet      │
-│   ReportServlet                          │
-│   DAO: UserDAO | ReservationDAO          │
-│   Singleton: DatabaseConnection          │
-└────────────────┬────────────────────────┘
-                 │ JDBC
-┌────────────────▼────────────────────────┐
-│        Data Layer (MySQL 8.0)            │
-│   Tables: users | reservations           │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│       Presentation Layer  (React.js)         │
+│   Login · Dashboard · Reservations           │
+│   Invoice · Reports · Help                   │
+└────────────────────┬────────────────────────┘
+                     │  HTTP / REST API (JSON)
+┌────────────────────▼────────────────────────┐
+│      Application Layer  (Java Servlets)      │
+│   LoginServlet · ReservationServlet          │
+│   ReportServlet                              │
+│   DAO: UserDAO · ReservationDAO              │
+│   Singleton: DatabaseConnection              │
+└────────────────────┬────────────────────────┘
+                     │  JDBC
+┌────────────────────▼────────────────────────┐
+│          Data Layer  (MySQL 8.0)             │
+│   Tables: users · reservations               │
+└─────────────────────────────────────────────┘
 ```
+
+---
+
+## 💰 Room Rates
+
+| Room Type | Rate (LKR / night) |
+|---|---|
+| 🛏️ Single | LKR 8,000 |
+| 🛏️🛏️ Double | LKR 12,000 |
+| 👑 Deluxe | LKR 18,000 |
 
 ---
 
 ## ✅ Prerequisites
 
-Before you begin, ensure you have installed:
+Ensure the following are installed before setting up the project:
 
-- **Java JDK 11+** – [Download](https://www.oracle.com/java/technologies/downloads/)
-- **Apache Tomcat 10+** – [Download](https://tomcat.apache.org/download-10.cgi)
-- **Maven 3.8+** – [Download](https://maven.apache.org/download.cgi)
-- **MySQL 8.0+** – [Download](https://dev.mysql.com/downloads/)
-- **Node.js 18+ & npm** – [Download](https://nodejs.org/)
-- **Git** – [Download](https://git-scm.com/)
+| Tool | Version | Download |
+|---|---|---|
+| Java JDK | 11+ | [Download](https://www.oracle.com/java/technologies/downloads/) |
+| Apache Tomcat | 10+ | [Download](https://tomcat.apache.org/download-10.cgi) |
+| Apache Maven | 3.8+ | [Download](https://maven.apache.org/download.cgi) |
+| MySQL | 8.0+ | [Download](https://dev.mysql.com/downloads/) |
+| Node.js & npm | 18+ | [Download](https://nodejs.org/) |
+| Git | Latest | [Download](https://git-scm.com/) |
 
 ---
 
@@ -106,26 +127,33 @@ git clone https://github.com/kavinda-dev/Ocean-View-Resort-Online-Room-Reservati
 cd Ocean-View-Resort-Online-Room-Reservation-System
 ```
 
+---
+
 ### 2. Database Setup
 
 ```bash
-# Login to MySQL
+# Log in to MySQL
 mysql -u root -p
 
-# Run the schema script
+# Run the provided schema script
 source database/schema.sql;
 ```
 
-This will:
-- Create the `ocean_view_resort` database
-- Create `users` and `reservations` tables
-- Insert a default admin user
+This will automatically:
+- ✅ Create the `ocean_view_resort` database
+- ✅ Create the `users` and `reservations` tables
+- ✅ Insert a default admin user
 
 **Default Admin Credentials:**
+
 | Field | Value |
 |---|---|
 | Username | `admin` |
 | Password | `admin123` |
+
+> ⚠️ **Important:** Change the password after your first login.
+
+---
 
 ### 3. Configure Database Connection
 
@@ -137,63 +165,59 @@ db.username=root
 db.password=your_mysql_password
 ```
 
+---
+
 ### 4. Build & Deploy Backend
 
 ```bash
 cd backend
 mvn clean package
 
-# Copy the WAR file to Tomcat webapps
+# Copy the WAR file to your Tomcat webapps directory
 cp target/ocean-view-resort-1.0.0.war /path/to/tomcat/webapps/
 
 # Start Tomcat
-/path/to/tomcat/bin/startup.sh   # Linux/Mac
-/path/to/tomcat/bin/startup.bat  # Windows
+/path/to/tomcat/bin/startup.sh    # Linux / macOS
+/path/to/tomcat/bin/startup.bat   # Windows
 ```
 
-Backend will be available at: `http://localhost:8080/ocean-view-resort`
+> Backend API will be available at: **`http://localhost:8080/ocean-view-resort`**
 
-### 5. Setup Frontend
+---
+
+### 5. Setup & Run Frontend
 
 ```bash
 cd frontend
 npm install
+npm start
 ```
 
-Edit `frontend/src/config/api.js` and set your backend URL:
+> Frontend will be available at: **`http://localhost:3000`**
+
+If your backend URL differs, edit `frontend/src/config/api.js`:
 
 ```js
 export const API_BASE_URL = "http://localhost:8080/ocean-view-resort/api";
 ```
 
-### 6. Run Frontend
-
-```bash
-cd frontend
-npm start
-```
-
-Frontend will be available at: `http://localhost:3000`
-
 ---
 
-## 🗄️ Database Setup
+## 🗄️ Database Schema
 
-The full schema is available at [`database/schema.sql`](database/schema.sql).
+Full schema: [`database/schema.sql`](database/schema.sql)
 
-### Tables
-
-**`users`**
+**`users` table**
 ```sql
 CREATE TABLE users (
     user_id   INT AUTO_INCREMENT PRIMARY KEY,
     username  VARCHAR(100) NOT NULL UNIQUE,
-    password  VARCHAR(255) NOT NULL,
+    password  VARCHAR(255) NOT NULL,          -- SHA-256 hashed
     role      VARCHAR(50)  NOT NULL DEFAULT 'staff'
 );
 ```
 
-**`reservations`**
+**`reservations` table**
 ```sql
 CREATE TABLE reservations (
     reservation_id  INT AUTO_INCREMENT PRIMARY KEY,
@@ -212,19 +236,21 @@ CREATE TABLE reservations (
 
 ## 🌐 API Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| `POST` | `/api/login` | Authenticate user | ❌ |
-| `POST` | `/api/reservations` | Create reservation | ✅ |
-| `GET` | `/api/reservations/{id}` | Get reservation by ID | ✅ |
-| `GET` | `/api/reservations` | Get all reservations | ✅ |
-| `DELETE` | `/api/reservations/{id}` | Cancel reservation | ✅ |
-| `GET` | `/api/reports/daily?date=YYYY-MM-DD` | Daily bookings | ✅ |
-| `GET` | `/api/reports/monthly?month=YYYY-MM` | Monthly income | ✅ |
-| `GET` | `/api/reports/occupancy` | Room occupancy | ✅ |
-| `GET` | `/api/reports/guest-history?name=X` | Guest history | ✅ |
+All endpoints are prefixed with `/api`. Protected endpoints require a valid `Authorization: Bearer <token>` header.
 
-**Sample Response:**
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| `POST` | `/login` | Authenticate user & receive JWT | ❌ |
+| `POST` | `/reservations` | Create a new reservation | ✅ |
+| `GET` | `/reservations` | Get all reservations | ✅ |
+| `GET` | `/reservations/{id}` | Get reservation by ID | ✅ |
+| `DELETE` | `/reservations/{id}` | Cancel a reservation | ✅ |
+| `GET` | `/reports/daily?date=YYYY-MM-DD` | Daily bookings report | ✅ |
+| `GET` | `/reports/monthly?month=YYYY-MM` | Monthly income report | ✅ |
+| `GET` | `/reports/occupancy` | Room occupancy report | ✅ |
+| `GET` | `/reports/guest-history?name=X` | Guest booking history | ✅ |
+
+**Sample Success Response:**
 ```json
 {
   "status": "success",
@@ -238,29 +264,6 @@ CREATE TABLE reservations (
   }
 }
 ```
-
----
-
-## 🌿 Branching Strategy
-
-| Branch | Purpose |
-|---|---|
-| `main` | Stable production-ready releases |
-| `develop` | Integration branch for features |
-| `feature/backend-api` | Backend servlet and DAO development |
-| `feature/frontend-ui` | React UI development |
-| `feature/reports` | Reports module |
-| `hotfix/*` | Critical bug fixes |
-
----
-
-## 💰 Room Rates
-
-| Room Type | Rate (LKR/night) |
-|---|---|
-| Single | LKR 8,000 |
-| Double | LKR 12,000 |
-| Deluxe | LKR 18,000 |
 
 ---
 
@@ -284,28 +287,27 @@ Ocean-View-Resort-Online-Room-Reservation-System/
 │   │       └── DatabaseConnection.java
 │   ├── src/main/resources/
 │   │   └── db.properties
-│   ├── src/main/webapp/
-│   │   └── WEB-INF/
-│   │       └── web.xml
+│   ├── src/main/webapp/WEB-INF/
+│   │   └── web.xml
 │   └── pom.xml
 ├── frontend/
 │   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   │   ├── Login.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── AddReservation.jsx
-│   │   │   ├── ViewReservation.jsx
-│   │   │   ├── Invoice.jsx
-│   │   │   ├── Reports.jsx
-│   │   │   └── Help.jsx
-│   │   ├── config/
-│   │   │   └── api.js
-│   │   └── App.jsx
-│   └── package.json
+│   └── src/
+│       ├── components/
+│       ├── config/
+│       │   └── api.js
+│       ├── pages/
+│       │   ├── Login.jsx
+│       │   ├── Dashboard.jsx
+│       │   ├── AddReservation.jsx
+│       │   ├── ViewReservation.jsx
+│       │   ├── Invoice.jsx
+│       │   ├── Reports.jsx
+│       │   └── Help.jsx
+│       └── App.jsx
 ├── database/
 │   └── schema.sql
+├── github-workflow.md
 ├── prd.md
 ├── task.md
 └── README.md
@@ -313,20 +315,47 @@ Ocean-View-Resort-Online-Room-Reservation-System/
 
 ---
 
+## 🌿 Branching Strategy
+
+```
+main  (stable production releases)
+ └── develop  (integration branch)
+      ├── feature/backend-api    (Java models, DAOs, Servlets)
+      ├── feature/frontend-ui    (React pages & components)
+      └── feature/reports        (Reports page & ReportServlet)
+```
+
+| Branch | Purpose |
+|---|---|
+| `main` | ⭐ Stable, production-ready releases |
+| `develop` | 🔧 Integration branch — features merge here first |
+| `feature/backend-api` | Java backend: models, DAOs, Servlets, DB connection |
+| `feature/frontend-ui` | React frontend: Login, Dashboard, Reservations, Invoice, Help |
+| `feature/reports` | Reports module: React page + ReportServlet |
+| `hotfix/*` | Critical production bug fixes |
+
+---
+
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m "feat: add your feature"`
+3. Commit using [Conventional Commits](https://www.conventionalcommits.org/): `git commit -m "feat: add your feature"`
 4. Push to the branch: `git push origin feature/your-feature`
-5. Open a Pull Request
+5. Open a Pull Request against `develop`
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
-*Ocean View Resort, Galle, Sri Lanka | Version 1.0.0*
+<div align="center">
+
+**Ocean View Resort** · Galle, Sri Lanka · Version 1.0.0
+
+*Built with ☕ Java & ⚛️ React*
+
+</div>
